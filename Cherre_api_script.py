@@ -93,8 +93,14 @@ try:
     # Flatten and convert to DataFrame
     flat_data = []
     for record in data:
+        if record is None:
+            continue
         zip_code_data = record.get("usa_zip_code_boundary_v2__zip_code", {})
+        if zip_code_data is None:
+            zip_code_data = {}
         demographics_data = zip_code_data.get("usa_demographics_v2__geography_id", [{}])
+        if demographics_data is None:
+            demographics_data = [{}]
         flat_data.append({
             "address": record.get("address"),
             "state": record.get("state"),
@@ -111,5 +117,7 @@ try:
         })
     df = pd.DataFrame(flat_data)
     print(df)
+    # Save the data to a CSV file
+    df.to_csv("charlotte_test_3.csv", index=False)
 except Exception as e:
     print(f"Error occurred: {e}")
