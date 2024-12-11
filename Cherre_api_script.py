@@ -56,25 +56,20 @@ def build_query(last_id=None):
     return query
 
 def fetch_data():
-    """Fetch all records with pagination."""
     all_results = []
-    last_id = None  # Tracks the last address
+    last_id = None
 
     while True:
         query = build_query(last_id)
-        print(f"Running query with last_id: {last_id}")  # Debug print
-
         try:
-            data = run_query(query)
-            print(json.dumps(data, indent=2))  # Print raw response for inspection
+            result = run_query(query)
+            records = result["data"]["tax_assessor_v2"]
         except Exception as e:
             print(f"Error occurred: {e}")
-            break
+            break  # Stop the loop if an error occurs
 
-        # Extract records from the response
-        records = data.get("data", {}).get("tax_assessor_v2", [])
         if not records:
-            print("No more records found.")  # Debug print
+            print("No records returned, stopping.")
             break  # Stop if no records are returned
 
         # Add records to the result list
@@ -108,14 +103,12 @@ try:
             "foundation_code": record["foundation_code"],
             "fl_fema_flood_zone": record["fl_fema_flood_zone"],
             "tax_assessor_id": record["tax_assessor_id"],
-            "average_household_income": record["usa_zip_code_boundary_v2__zip_code"][0]["usa_demographics_v2__geography_id"][0]["average_household_income"],
+            "average_household_income": record["usa_zip_code_boundary_v2__zip_code"]["usa_demographics_v2__geography_id"][0]["average_household_income"] if record["usa_zip_code_boundary_v2__zip_code"]["usa_demographics_v2__geography_id"] else None,
+            "vintage": record["usa_zip_code_boundary_v2__zip_code"]["usa_demographics_v2__geography_id"][0]["vintage"] if record["usa_zip_code_boundary_v2__zip_code"]["usa_demographics_v2__geography_id"] else None
         }
         for record in data
     ]
     df = pd.DataFrame(flat_data)
-    # Export the DataFrame to an Excel file
-    output_file = '/Users/willpersonal/Documents/Home Brands/Cherre API/charlotte_test_3.xlsx'
-    df.to_excel(output_file, index=False)
-    print(f"Data exported to {output_file}")
+    print(df)
 except Exception as e:
     print(f"Error occurred: {e}")
