@@ -91,23 +91,24 @@ def fetch_data():
 try:
     data = fetch_data()
     # Flatten and convert to DataFrame
-    flat_data = [
-        {
-            "address": record["address"],
-            "state": record["state"],
-            "city": record["city"],
-            "zip": record["zip"],
-            "building_sq_ft": record["building_sq_ft"],
-            "hvacc_cooling_code": record["hvacc_cooling_code"],
-            "hvacc_heating_code": record["hvacc_heating_code"],
-            "foundation_code": record["foundation_code"],
-            "fl_fema_flood_zone": record["fl_fema_flood_zone"],
-            "tax_assessor_id": record["tax_assessor_id"],
-            "average_household_income": record["usa_zip_code_boundary_v2__zip_code"]["usa_demographics_v2__geography_id"][0]["average_household_income"] if record["usa_zip_code_boundary_v2__zip_code"]["usa_demographics_v2__geography_id"] else None,
-            "vintage": record["usa_zip_code_boundary_v2__zip_code"]["usa_demographics_v2__geography_id"][0]["vintage"] if record["usa_zip_code_boundary_v2__zip_code"]["usa_demographics_v2__geography_id"] else None
-        }
-        for record in data
-    ]
+    flat_data = []
+    for record in data:
+        zip_code_data = record.get("usa_zip_code_boundary_v2__zip_code", {})
+        demographics_data = zip_code_data.get("usa_demographics_v2__geography_id", [{}])
+        flat_data.append({
+            "address": record.get("address"),
+            "state": record.get("state"),
+            "city": record.get("city"),
+            "zip": record.get("zip"),
+            "building_sq_ft": record.get("building_sq_ft"),
+            "hvacc_cooling_code": record.get("hvacc_cooling_code"),
+            "hvacc_heating_code": record.get("hvacc_heating_code"),
+            "foundation_code": record.get("foundation_code"),
+            "fl_fema_flood_zone": record.get("fl_fema_flood_zone"),
+            "tax_assessor_id": record.get("tax_assessor_id"),
+            "average_household_income": demographics_data[0].get("average_household_income"),
+            "vintage": demographics_data[0].get("vintage")
+        })
     df = pd.DataFrame(flat_data)
     print(df)
 except Exception as e:
