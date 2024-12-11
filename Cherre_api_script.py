@@ -21,17 +21,18 @@ def build_query(last_id=None):
         where: {
             state: {_eq: "NC"},
             city: {_eq: "CHARLOTTE"},
+            foundation_code: {_eq: "2"},
             property_use_code_mapped: {_eq: "44"}
         """
     if last_id:
-        where_clause += f', address: {{_gt: "{last_id}"}}'  # Use _gt for descending pagination
+        where_clause += f', tax_assessor_id: {{_gt: {last_id}}}'  # Use _gt for ascending pagination
     where_clause += "}"
     
     query = f"""
     {{
       tax_assessor_v2(
         {where_clause}
-        order_by: {{address: desc}}
+        order_by: {{tax_assessor_id: asc}}
         limit: 1000
       ) {{
         address
@@ -43,7 +44,13 @@ def build_query(last_id=None):
         hvacc_heating_code
         foundation_code
         fl_fema_flood_zone
-        address
+        tax_assessor_id
+        usa_zip_code_boundary_v2__zip_code {{
+          usa_demographics_v2__geography_id(order_by: {{vintage: desc}}, limit: 1) {{
+            average_household_income
+            vintage
+          }}
+        }}
       }}
     }}
     """
@@ -80,7 +87,7 @@ def fetch_data():
             break
 
         # Update last_id to the smallest address for next query
-        last_id = records[-1]["address"]
+        last_id = records[-1]["tax_assessor_id"]
 
         # Sleep to avoid hitting API limits
         time.sleep(0.1)
