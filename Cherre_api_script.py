@@ -19,8 +19,8 @@ def build_query(last_id=None):
     """Build the query with dynamic pagination."""
     where_clause = """
         where: {
-            state: {_eq: "NC"},
-            city: {_eq: "CHARLOTTE"},
+            state: {_eq: "SC"},
+            city: {_eq: "GREENVILLE"},
             property_use_code_mapped: {_eq: "44"}
         """
     if last_id:
