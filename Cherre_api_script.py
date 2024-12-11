@@ -20,7 +20,7 @@ def build_query(last_id=None):
     where_clause = """
         where: {
             state: {_eq: "NC"},
-            city: {_eq: "WILMINGTON"},
+            city: {_eq: "RALEIGH"},
             property_use_code_mapped: {_eq: "44"}
         """
     if last_id:
@@ -118,6 +118,6 @@ try:
     df = pd.DataFrame(flat_data)
     print(df)
     # Save the data to a CSV file
-    df.to_csv("wilmington_data.csv", index=False)
+    df.to_csv("raleigh_data.csv", index=False)
 except Exception as e:
     print(f"Error occurred: {e}")
