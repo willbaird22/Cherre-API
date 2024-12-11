@@ -19,8 +19,8 @@ def build_query(last_id=None):
     """Build the query with dynamic pagination."""
     where_clause = """
         where: {
-            state: {_eq: "NC"},
-            city: {_eq: "RALEIGH"},
+            state: {_eq: "PA"},
+            city: {_eq: "HARRISBURG"},
             property_use_code_mapped: {_eq: "44"}
         """
     if last_id:
@@ -118,6 +118,6 @@ try:
     df = pd.DataFrame(flat_data)
     print(df)
     # Save the data to a CSV file
-    df.to_csv("raleigh_data.csv", index=False)
+    df.to_csv("harrisburg_data.csv", index=False)
 except Exception as e:
     print(f"Error occurred: {e}")
