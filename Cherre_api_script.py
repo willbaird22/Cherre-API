@@ -21,7 +21,6 @@ def build_query(last_id=None):
         where: {
             state: {_eq: "NC"},
             city: {_eq: "CHARLOTTE"},
-            foundation_code: {_eq: "2"},
             property_use_code_mapped: {_eq: "44"}
         """
     if last_id:
@@ -108,12 +107,14 @@ try:
             "hvacc_heating_code": record["hvacc_heating_code"],
             "foundation_code": record["foundation_code"],
             "fl_fema_flood_zone": record["fl_fema_flood_zone"],
+            "tax_assessor_id": record["tax_assessor_id"],
+            "average_household_income": record["usa_zip_code_boundary_v2__zip_code"][0]["usa_demographics_v2__geography_id"][0]["average_household_income"],
         }
         for record in data
     ]
     df = pd.DataFrame(flat_data)
     # Export the DataFrame to an Excel file
-    output_file = '/Users/willpersonal/Documents/Home Brands/Cherre API/output.xlsx'
+    output_file = '/Users/willpersonal/Documents/Home Brands/Cherre API/charlotte_test_3.xlsx'
     df.to_excel(output_file, index=False)
     print(f"Data exported to {output_file}")
 except Exception as e:
