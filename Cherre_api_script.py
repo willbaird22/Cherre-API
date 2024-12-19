@@ -19,8 +19,7 @@ def build_query(last_id=None):
     """Build the query with dynamic pagination."""
     where_clause = """
         where: {
-            state: {_eq: "PA"},
-            city: {_eq: "CARLISLE"},
+            zip: {_eq: "29650"},
             property_use_code_mapped: {_eq: "44"}
         """
     if last_id:
@@ -35,14 +34,19 @@ def build_query(last_id=None):
         limit: 1000
       ) {{
         address
-        state
         city
+        state
         zip
-        building_sq_ft
-        hvacc_cooling_code
-        hvacc_heating_code
+        situs_county
+        longitude
+        latitude
+        basement_finished_sq_ft
+        basement_sq_ft
+        basement_unfinished_sq_ft
         foundation_code
-        fl_fema_flood_zone
+        market_value_total
+        year_built
+        building_sq_ft
         tax_assessor_id
         usa_zip_code_boundary_v2__zip_code {{
           usa_demographics_v2__geography_id(order_by: {{vintage: desc}}, limit: 1) {{
@@ -106,18 +110,22 @@ try:
             "state": record.get("state"),
             "city": record.get("city"),
             "zip": record.get("zip"),
+            "situs_county": record.get("situs_county"),
+            "longitude": record.get("longitude"),
+            "latitude": record.get("latitude"),
+            "basement_finished_sq_ft": record.get("basement_finished_sq_ft"),
+            "basement_sq_ft": record.get("basement_sq_ft"),
+            "basement_unfinished_sq_ft": record.get("basement_unfinished_sq_ft"),
             "building_sq_ft": record.get("building_sq_ft"),
-            "hvacc_cooling_code": record.get("hvacc_cooling_code"),
-            "hvacc_heating_code": record.get("hvacc_heating_code"),
+            "market_value_total": record.get("market_value_total"),
+            "year_built": record.get("year_built"),
             "foundation_code": record.get("foundation_code"),
-            "fl_fema_flood_zone": record.get("fl_fema_flood_zone"),
             "tax_assessor_id": record.get("tax_assessor_id"),
             "average_household_income": demographics_data[0].get("average_household_income"),
-            "vintage": demographics_data[0].get("vintage")
         })
     df = pd.DataFrame(flat_data)
     print(df)
     # Save the data to a CSV file
-    df.to_csv("carlisle_data.csv", index=False)
+    df.to_csv("29650.csv", index=False)
 except Exception as e:
     print(f"Error occurred: {e}")
